@@ -1,0 +1,85 @@
+version: '3'
+services:
+  ############################
+  # Node app + Dapr sidecar
+  ############################
+  nodeapp:
+    build: ./node-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - app-network
+  nodeapp-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+     "-app-id", "node-app",
+     "-app-port", "3000",
+     "-placement-host-address", "placement:50006",
+     "-dapr-grpc-port", "50002",
+     "-components-path", "/components"]
+    volumes:
+        - "./components/:/components"
+    depends_on:
+      - nodeapp
+    network_mode: "service:nodeapp"
+  ############################
+  # Python app + Dapr sidecar
+  ############################
+  pythonapp:
+    build: ./python-service
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - app-network
+  pythonapp-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd", "-app-id", "python-app", "-app-port", "5000", "-placement-host-address", "placement:50006","-components-path", "/components"]
+    volumes:
+      - "./components/:/components"
+    depends_on:
+      - pythonapp
+    network_mode: "service:pythonapp"
+
+  ############################
+  # Go app + Dapr sidecar
+  ############################
+  goapp:
+    build: ./go-service
+    depends_on:
+      - redis
+      - placement
+    networks:
+      - app-network
+  goapp-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd", "-app-id", "go-app", "-app-port", "8050", "-placement-host-address", "placement:50006","-components-path", "/components"]
+    volumes:
+      - "./components/:/components"
+    depends_on: []
+    network_mode: "service:goapp"
+
+  ############################
+  # Dapr placement service
+  ############################
+  placement:
+    image: "daprio/dapr"
+    command: ["./placement", "-port", "50006"]
+    ports:
+      - "50006:50006"
+    networks:
+      - app-network
+  ############################
+  # Redis state store
+  ############################
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    networks:
+      - app-network
+networks:
+    app-network:
