@@ -1,0 +1,36 @@
+kind: containerapp
+location: eastus
+name: python-service
+resourceGroup: microservices-demo
+type: Microsoft.App/containerApps
+tags:
+properties:
+  managedEnvironmentId: /subscriptions/b01ccf48-42fe-42e5-a5c7-d1fbd9802ed2/resourceGroups/microservices-demo/providers/Microsoft.App/managedEnvironments/microservices
+  configuration:
+    activeRevisionsMode: Single
+    secrets:
+      - name: myregistrypassword
+        value: "cwm3Mk14OfA1U9IGoUSpQh/YsGIFMgOE"
+    registries:
+      - passwordSecretRef: myregistrypassword
+        server: ca2d9bfa2846acr.azurecr.io
+        username: ca2d9bfa2846acr
+    dapr:
+      appId: python-app
+      appPort: 5000
+      appProtocol: http
+      enabled: true
+  template:
+    revisionSuffix: 202205011526
+    containers:
+      - image: ca2d9bfa2846acr.azurecr.io/python-service:20220501125717395407
+        name: python-service
+        env:
+          - name: HTTP_PORT
+            value: 5000
+        resources:
+          cpu: 1
+          memory: 2Gi
+    scale:
+      minReplicas: 1
+      maxReplicas: 3

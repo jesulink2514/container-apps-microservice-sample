@@ -1,0 +1,44 @@
+kind: containerapp
+location: eastus
+name: node-service
+resourceGroup: microservices-demo
+type: Microsoft.App/containerApps
+tags:
+properties:
+  managedEnvironmentId: /subscriptions/b01ccf48-42fe-42e5-a5c7-d1fbd9802ed2/resourceGroups/microservices-demo/providers/Microsoft.App/managedEnvironments/microservices
+  configuration:
+    activeRevisionsMode: Single
+    secrets:
+      - name: myregistrypassword
+        value: "cwm3Mk14OfA1U9IGoUSpQh/YsGIFMgOE"
+    ingress:
+      external: true
+      allowInsecure: true
+      targetPort: 3000
+      traffic:
+        - latestRevision: true
+          weight: 100
+      transport: Auto
+    registries:
+      - passwordSecretRef: myregistrypassword
+        server: ca2d9bfa2846acr.azurecr.io
+        username: ca2d9bfa2846acr
+    dapr:
+      appId: node-app
+      appPort: 3000
+      appProtocol: http
+      enabled: true
+  template:
+    revisionSuffix: node
+    containers:
+      - image: ca2d9bfa2846acr.azurecr.io/node-service:20220501143808396455
+        name: node-service
+        env:
+          - name: HTTP_PORT
+            value: 3000
+        resources:
+          cpu: 1
+          memory: 2Gi
+    scale:
+      minReplicas: 1
+      maxReplicas: 3

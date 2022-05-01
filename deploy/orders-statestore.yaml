@@ -1,0 +1,16 @@
+componentType: state.azure.blobstorage
+version: v1
+metadata:
+- name: accountName
+  value: "techies"
+- name: accountKey
+  secretRef: account-key
+- name: containerName
+  value: orders
+secrets:
+- name: account-key
+  value: "9BjAXgrV8OOGNERo4k5HNgx6GFMqk98ooqgbv0r8sDeir1fksPTUf6w1OXwQ/ygxAn/+cTuD7Ef5+AStgIkoTQ=="
+scopes:
+- node-app
+- go-app
+- python-app
