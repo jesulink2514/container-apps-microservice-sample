@@ -1,20 +1,20 @@
 kind: containerapp
 location: eastus
 name: go-service
-resourceGroup: microservices-demo
+resourceGroup: <<grupo-recursos>>
 type: Microsoft.App/containerApps
 tags:
 properties:
-  managedEnvironmentId: /subscriptions/b01ccf48-42fe-42e5-a5c7-d1fbd9802ed2/resourceGroups/microservices-demo/providers/Microsoft.App/managedEnvironments/microservices
+  managedEnvironmentId: /subscriptions/<<subscription-key>>/resourceGroups/<<grupo-recursos>>/providers/Microsoft.App/managedEnvironments/<<aca-environment-name>>
   configuration:
     activeRevisionsMode: Single
     secrets:
       - name: myregistrypassword
-        value: "cwm3Mk14OfA1U9IGoUSpQh/YsGIFMgOE"
+        value: "registry-secret-here"
     registries:
       - passwordSecretRef: myregistrypassword
-        server: ca2d9bfa2846acr.azurecr.io
-        username: ca2d9bfa2846acr
+        server: <<registry>>.azurecr.io
+        username: <<registry-user>>
     dapr:
       appId: go-app
       appPort: 8050
@@ -23,7 +23,7 @@ properties:
   template:
     revisionSuffix: 202205011526
     containers:
-      - image: ca2d9bfa2846acr.azurecr.io/go-service:20220501124932219820
+      - image: <<registry>>.azurecr.io/go-service:20220501124932219820
         name: go-service
         env:
           - name: HTTP_PORT

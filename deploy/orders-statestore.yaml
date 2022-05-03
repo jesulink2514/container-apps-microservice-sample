@@ -9,7 +9,7 @@ metadata:
   value: orders
 secrets:
 - name: account-key
-  value: "9BjAXgrV8OOGNERo4k5HNgx6GFMqk98ooqgbv0r8sDeir1fksPTUf6w1OXwQ/ygxAn/+cTuD7Ef5+AStgIkoTQ=="
+  value: "<<secret-key-here>>"
 scopes:
 - node-app
 - go-app
